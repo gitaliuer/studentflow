@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Қате {{ code }}{% endblock %}
+{% block breadcrumb %}Қате{% endblock %}
+{% block content %}
+<section class="error-page"><div class="error-symbol">{{ icon('alert', 36) }}</div><div class="error-code">{{ code }}</div><h1>{% if code == 404 %}Бет табылмады{% elif code == 403 %}Қолжетімділік шектелген{% elif code == 500 %}Уақытша қате{% else %}Бұл бет ашылмады{% endif %}</h1><p>{{ message }}</p><div class="error-actions"><a class="btn btn-primary" href="/">{{ icon('back', 18) }} Басты бетке қайту</a>{% if not user %}<a class="btn btn-secondary" href="/register">Тіркелу</a>{% endif %}</div></section>
+{% endblock %}

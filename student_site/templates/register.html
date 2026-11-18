@@ -1,0 +1,52 @@
+{% from "_icons.html" import icon %}
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Тіркелу · StudentFlow</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="login-body">
+  <main class="login-layout">
+    <section class="login-feature" aria-label="Қауіпсіз тіркелу">
+      <div class="login-feature-inner">
+        <a href="/login" class="login-logo" style="color:inherit;text-decoration:none"><span class="brand-logo">S<span class="brand-dot">.</span></span><span>StudentFlow</span></a>
+        <div class="login-copy">
+          <div class="eyebrow"><span class="eyebrow-line"></span> ҚАУІПСІЗ ҚОЛЖЕТІМДІЛІК</div>
+          <h1>Өз оқу<br><em>кеңістігіңіз.</em></h1>
+          <p>Жеке кабинетіңізге тіркеліңіз. Құпиясөз Argon2 алгоритмімен хэштеліп сақталады.</p>
+          <div class="login-benefits">
+            <div>{{ icon('check', 18) }} <span>Құпиясөз дерекқорда ашық сақталмайды</span></div>
+            <div>{{ icon('check', 18) }} <span>Жаңа аккаунтқа студент рөлі беріледі</span></div>
+            <div>{{ icon('check', 18) }} <span>Әкімші құқықтары тіркелу арқылы берілмейді</span></div>
+          </div>
+        </div>
+        <div class="feature-footer">STUDENT MANAGEMENT PLATFORM <span>© 2026</span></div>
+      </div>
+      <div class="orb orb-one"></div><div class="orb orb-two"></div>
+    </section>
+    <section class="login-form-panel">
+      <div class="login-mobile-brand">StudentFlow<span>.</span></div>
+      <div class="login-form-wrap">
+        <div class="login-icon">{{ icon('users', 25) }}</div>
+        <h2>Аккаунт ашу</h2>
+        <p class="login-description">Мәліметтерді енгізіп, StudentFlow жүйесіне тіркеліңіз.</p>
+        {% if flash %}<div class="alert alert-error" role="alert">{{ icon('alert', 18) }}<span>{{ flash.text }}</span></div>{% endif %}
+        <form method="post" action="/register" class="form-stack login-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <label class="field"><span>Аты-жөні</span><input name="full_name" type="text" placeholder="Мысалы: Айдана Серік" maxlength="100" autocomplete="name" required autofocus></label>
+          <label class="field"><span>Логин</span><input name="username" type="text" placeholder="aidana01" minlength="3" maxlength="40" pattern="[A-Za-z0-9_.-]{3,40}" autocomplete="username" required><small>3–40 таңба: латын әріптері, сандар, нүкте, сызықша немесе астын сызу.</small></label>
+          <label class="field"><span>Тобы <small>(міндетті емес)</small></span><input name="group_name" type="text" placeholder="Мысалы: АЖҚ-221" maxlength="40" autocomplete="off"></label>
+          <label class="field"><span>Құпиясөз</span><input name="password" type="password" placeholder="Кемінде 8 таңба" minlength="8" maxlength="200" autocomplete="new-password" required></label>
+          <label class="field"><span>Құпиясөзді қайталаңыз</span><input name="password_confirm" type="password" placeholder="Қайта енгізіңіз" minlength="8" maxlength="200" autocomplete="new-password" required></label>
+          <button type="submit" class="btn btn-primary btn-full">Тіркелу {{ icon('arrow', 19) }}</button>
+        </form>
+        <p class="login-help">Аккаунтыңыз бар ма? <a href="/login">Жүйеге кіру</a></p>
+      </div>
+      <div class="login-bottom">Жаңа аккаунтқа автоматты түрде Студент рөлі беріледі.</div>
+    </section>
+  </main>
+</body>
+</html>

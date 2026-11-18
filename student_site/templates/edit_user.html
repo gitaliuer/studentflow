@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Пайдаланушыны өңдеу{% endblock %}
+{% block breadcrumb %}Пайдаланушыны өңдеу{% endblock %}
+{% block content %}
+<a href="/admin#users" class="back-link">{{ icon('back', 18) }} Басқару панеліне оралу</a>
+<div class="page-intro edit-intro"><div><div class="eyebrow eyebrow-dark"><span class="eyebrow-line"></span> АККАУНТТЫ ӨҢДЕУ</div><h1>{{ editing.full_name }}</h1><p>Пайдаланушы мәліметтерін өзгертіңіз. Құпиясөзді өзгерту міндетті емес.</p></div></div>
+<section class="panel edit-panel"><form method="post" action="/admin/users/{{ editing.id }}/edit" class="form-stack">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <div class="form-columns"><label class="field"><span>Аты-жөні</span><input name="full_name" maxlength="100" value="{{ editing.full_name }}" required></label><label class="field"><span>Логин</span><input name="username" maxlength="40" pattern="[A-Za-z0-9_.-]{3,40}" value="{{ editing.username }}" required></label></div>
+  <div class="form-columns"><label class="field"><span>Рөлі</span><select name="role" required>{% for value, label in roles.items() %}<option value="{{ value }}" {% if editing.role == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label><label class="field"><span>Тобы (студент үшін)</span><input name="group_name" maxlength="40" value="{{ editing.group_name or '' }}" placeholder="АЖҚ-221"></label></div>
+  <label class="field"><span>Жаңа құпиясөз <small>(өзгермесе, бос қалдырыңыз)</small></span><input name="password" type="password" minlength="8" autocomplete="new-password" placeholder="Кемінде 8 таңба"></label>
+  <div class="form-actions"><a class="btn btn-secondary" href="/admin#users">Бас тарту</a><button class="btn btn-primary" type="submit">{{ icon('check', 18) }} Өзгерістерді сақтау</button></div>
+</form></section>
+{% endblock %}

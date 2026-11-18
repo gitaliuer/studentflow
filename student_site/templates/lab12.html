@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Қауіпсіздік · №12{% endblock %}
+{% block breadcrumb %}Қауіпсіздік механизмдері · №12{% endblock %}
+{% block content %}
+<div class="page-intro"><div><div class="eyebrow eyebrow-dark"><span class="eyebrow-line"></span> ЗЕРТХАНАЛЫҚ ЖҰМЫС №12</div><h1>Қауіпсіздік механизмдері</h1><p>Аутентификация, рөлдер және SQL-инъекциядан қорғаныс бір жүйеде іске асырылған.</p></div><span class="header-indicator">{{ icon('shield', 17) }} Қорғалған орта</span></div>
+
+<section class="stats-grid" aria-label="Қауіпсіздік мүмкіндіктері">
+  <article class="stat-card"><div class="stat-icon icon-blue">{{ icon('lock', 23) }}</div><div class="stat-label">Аутентификация</div><div class="stat-value" style="font-size:18px">Argon2</div><div class="stat-foot">Құпиясөз хэші және сессия</div></article>
+  <article class="stat-card"><div class="stat-icon icon-mint">{{ icon('users', 23) }}</div><div class="stat-label">Рөлдер</div><div class="stat-value" style="font-size:18px">3 рөл</div><div class="stat-foot">admin · teacher · student</div></article>
+  <article class="stat-card"><div class="stat-icon icon-violet">{{ icon('shield', 23) }}</div><div class="stat-label">Авторизация</div><div class="stat-value" style="font-size:18px">Серверде</div><div class="stat-foot">Әр маршрутта рөл тексеріледі</div></article>
+  <article class="stat-card"><div class="stat-icon icon-peach">{{ icon('check', 23) }}</div><div class="stat-label">SQL қорғанысы</div><div class="stat-value" style="font-size:18px">Параметр</div><div class="stat-foot">SQLite Prepared Statements</div></article>
+</section>
+
+<div class="dashboard-grid section-spacing">
+  <section class="panel form-panel">
+    <div class="panel-heading"><span class="panel-heading-icon">{{ icon('shield', 20) }}</span><div><h3>SQL-инъекцияны қауіпсіз тексеру</h3><p>Мән SQL сұрауына параметр ретінде беріледі</p></div></div>
+    <form method="post" action="/lab12/security-test" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label class="field"><span>Логинді іздеу (тест мәнін енгізуге болады)</span><input name="search" maxlength="80" value="{{ test_input }}" placeholder="Мысалы: student1 немесе ' OR 1=1 --" autocomplete="off"></label>
+      <button type="submit" class="btn btn-primary">Қауіпсіз сұрауды орындау {{ icon('arrow', 18) }}</button>
+    </form>
+    {% if test_result is not none %}<div class="alert alert-success" role="status"><span>Сұрау қауіпсіз орындалды. Сәйкес жазба саны: {{ test_result }}. Енгізілген мән сұраудың SQL кодын өзгерткен жоқ.</span></div>{% endif %}
+    <div class="form-hint" style="margin-top:14px"><strong>Инъекция сынағы:</strong> <code>' OR 1=1 --</code> енгізіп тексеріңіз. Бұл жол кәдімгі мәтін ретінде ізделеді.</div>
+  </section>
+
+  <section class="panel form-panel">
+    <div class="panel-heading"><span class="panel-heading-icon">{{ icon('users', 20) }}</span><div><h3>Рөлдер және қолжетімділік</h3><p>Рөл браузерден емес, дерекқордан оқылады</p></div></div>
+    <div class="stacked"><strong>Әкімші (admin)</strong><small>Пайдаланушылар мен пәндерді басқару{% if user.role == 'admin' %} · <a href="/admin">Әкімші панелі</a>{% else %} · тек әкімшіге қолжетімді{% endif %}</small></div>
+    <div class="stacked" style="margin-top:16px"><strong>Оқытушы (teacher)</strong><small>Тек өз пәндері мен бағаларын басқару · <a href="/teacher">Оқытушы кабинеті</a></small></div>
+    <div class="stacked" style="margin-top:16px"><strong>Студент (student)</strong><small>Тек өзінің оқу нәтижелерін көру · <a href="/student">Студент кабинеті</a></small></div>
+    {% if user.role == 'admin' %}<p class="form-hint" style="margin-top:18px">Рөлдері бар пайдаланушылардың нақты тізімі <a href="/admin#users">әкімші панелінде</a> көрсетіледі.</p>{% endif %}
+  </section>
+</div>
+
+<section class="panel" style="padding:24px;margin-top:22px">
+  <div class="panel-heading"><span class="panel-heading-icon">{{ icon('check', 20) }}</span><div><h3>Қауіпсіздік сценарийлері</h3><p>Қорғау кезінде көрсетуге арналған тексерулер</p></div></div>
+  <div class="table-scroll"><table class="data-table"><thead><tr><th>Сценарий</th><th>Күтілетін нәтиже</th><th>Қорғаныс</th></tr></thead><tbody>
+    <tr><td>Тіркелу кезінде admin рөлін қолдан жасау</td><td>Әр жаңа аккаунтқа student беріледі</td><td>Рөл серверде бекітілген</td></tr>
+    <tr><td>Студенттің /admin ашуы</td><td>Кіру бетіне не өз кабинетіне бағытталады</td><td>Серверлік рөлдік тексеру</td></tr>
+    <tr><td><code>' OR 1=1 --</code> енгізу</td><td>Тек мәтін ретінде ізделеді</td><td>Параметрленген сұрау және CSRF тексеруі</td></tr>
+    <tr><td>Басқа студенттің бағасын ашу</td><td>Жеке дерек көрсетілмейді</td><td>Пайдаланушы ID бойынша сүзу</td></tr>
+  </tbody></table></div>
+  <p class="form-hint" style="margin-top:16px">Аутентификация — «сіз кімсіз?» дегенді тексереді; авторизация — «сізге не істеуге болады?» дегенді тексереді.</p>
+</section>
+{% endblock %}

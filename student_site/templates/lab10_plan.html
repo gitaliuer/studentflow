@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Сақталған жоспар{% endblock %}
+{% block breadcrumb %}Сақталған жоспар{% endblock %}
+{% block extra_head %}<script src="/static/lab10.js" defer></script>{% endblock %}
+{% block content %}
+<div data-lab-page="saved">
+  <div class="page-intro"><div><div class="eyebrow eyebrow-dark"><span class="eyebrow-line"></span> LOCALSTORAGE → DOM</div><h1>Сақталған оқу жоспары</h1><p>Бұл бөлек бет: деректер браузер жадынан қайта оқылады.</p></div><a class="btn btn-primary" href="/lab10">Тақырып қосу</a></div>
+  <nav class="lab-steps" aria-label="Зертханалық жұмыс қадамдары"><a class="lab-step" href="/lab10">← 01 · Жоспар құру</a><span class="lab-step current" aria-current="step">02 · Сақталған жоспар</span></nav>
+  <p class="lab-note">Оқу жоспары осы браузер мен сайт мекенжайына ортақ. Басқа аккаунтқа кірсеңіз де көрінеді. Мұнда жеке деректер жоқ; бұл серверлік дерекқор немесе бағалар журналы емес.</p>
+  <noscript><p class="alert alert-error">Сақталған жоспарды оқу үшін JavaScript қосыңыз.</p></noscript>
+  <div id="lab-status" class="lab-status" role="status" aria-live="polite"></div>
+  <div class="lab-summary-grid"><div class="panel lab-metric"><span>Тақырыптар</span><strong id="plan-count">—</strong></div><div class="panel lab-metric"><span>Жалпы сағат</span><strong id="plan-total">—</strong></div><div class="panel lab-metric"><span>Жоғары басымдық</span><strong id="plan-high">—</strong></div></div>
+  <div class="section-head"><div><h2>Жоспар мазмұны</h2><p>Кестенің жолдары JavaScript арқылы жасалады</p></div><button class="btn btn-secondary" type="button" id="reload-plan">Қайта оқу</button></div>
+  <section class="panel panel-table" aria-label="Сақталған тақырыптар"><div class="table-scroll"><table class="data-table"><caption class="visually-hidden">Браузерден оқылған оқу жоспары</caption><thead><tr><th scope="col">Тақырып</th><th scope="col">Бағыт</th><th scope="col">Сағат</th><th scope="col">Басымдық</th></tr></thead><tbody id="plan-rows"></tbody></table></div><div id="plan-empty" class="lab-empty" hidden><strong>Жоспар әзірге бос</strong><p>Бірінші бетте тақырып таңдап, «Жоспарға сақтау» батырмасын басыңыз.</p><a class="btn btn-primary" href="/lab10">Жоспар құру</a></div></section>
+  <div class="lab-actions"><a class="btn btn-secondary" href="/lab10/map">Сайт картасы</a><button type="button" class="btn btn-secondary" id="clear-plan" disabled>Оқу жоспарын тазарту</button></div>
+  <p class="lab-muted">Тазарту тек studentflow.lab10.plan.v1 кілтін жояды. Басқа браузер деректері мен SQLite өзгермейді.</p>
+</div>
+{% endblock %}

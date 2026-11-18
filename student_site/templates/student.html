@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Студент кабинеті{% endblock %}
+{% block breadcrumb %}Жеке кабинет{% endblock %}
+{% block content %}
+<div class="page-intro"><div><div class="eyebrow eyebrow-dark"><span class="eyebrow-line"></span> СТУДЕНТ КАБИНЕТІ</div><h1>Сәлем, {{ user.full_name.split()[0] }}!</h1><p>Оқу үлгеріміңіз бен бағаларыңызды осы жерден көре аласыз.</p></div><span class="header-indicator">{{ icon('cap', 17) }} {{ profile.group_name if profile else 'Студент' }}</span></div>
+<section class="student-banner"><div class="banner-copy"><span class="banner-label">МЕНІҢ ОҚУ ПРОФИЛІМ</span><h2>{{ user.full_name }}</h2><p>{{ profile.group_name if profile else 'Топ көрсетілмеген' }} <span class="banner-separator">•</span> {{ user.username }}</p></div><div class="banner-symbol">{{ icon('cap', 96) }}</div></section>
+<section class="stats-grid stats-three">
+  <div class="stat-card"><div class="stat-icon icon-blue">{{ icon('chart', 23) }}</div><div class="stat-label">Орташа балл</div><div class="stat-value">{{ average if average is not none else '—' }}{% if average is not none %}<small>/ 100</small>{% endif %}</div><div class="stat-foot">Барлық бағалар бойынша</div></div>
+  <div class="stat-card"><div class="stat-icon icon-mint">{{ icon('book', 23) }}</div><div class="stat-label">Пәндер</div><div class="stat-value">{{ subject_count }}</div><div class="stat-foot">Баға қойылған пәндер</div></div>
+  <div class="stat-card"><div class="stat-icon icon-violet">{{ icon('list', 23) }}</div><div class="stat-label">Бағалар саны</div><div class="stat-value">{{ grades|length }}</div><div class="stat-foot">Тіркелген нәтижелер</div></div>
+</section>
+<div class="section-head" id="grades"><div><h2>Менің бағаларым</h2><p>Тек өзіңізге тиесілі оқу нәтижелері көрсетіледі</p></div><span class="count-pill">{{ grades|length }} нәтиже</span></div>
+<section class="panel panel-table"><div class="table-scroll"><table class="data-table">
+  <thead><tr><th>Пән</th><th>Оқытушы</th><th>Нәтиже</th><th>Баға</th><th>Күні</th></tr></thead>
+  <tbody>{% for g in grades %}<tr>
+    <td><div class="subject-cell"><span class="subject-icon">{{ icon('book', 18) }}</span><strong>{{ g.subject }}</strong></div></td><td>{{ g.teacher }}</td>
+    <td><div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ g.score }}"><div class="progress-fill" style="width: {{ g.score }}%"></div></div></td>
+    <td><span class="score-badge">{{ g.score }}</span></td><td class="date-cell">{{ g.created_at[:16] }}</td>
+  </tr>{% else %}<tr><td colspan="5"><div class="empty-state">Бағалар әлі жоқ. Оқытушы нәтиже енгізгеннен кейін олар осы бетте көрінеді.</div></td></tr>{% endfor %}</tbody>
+</table></div></section>
+{% endblock %}

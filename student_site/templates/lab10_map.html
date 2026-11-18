@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Сайт картасы{% endblock %}
+{% block breadcrumb %}Сайт картасы{% endblock %}
+{% block content %}
+<div class="page-intro"><div><div class="eyebrow eyebrow-dark"><span class="eyebrow-line"></span> ARCHITECTURE MAP · №10</div><h1>Беттер арасындағы байланыс</h1><p>Тұтас сайттың навигациясы және клиенттік оқу модулі.</p></div><a class="btn btn-primary" href="/lab10">Жоспар құруға өту</a></div>
+<section class="panel lab-map" aria-labelledby="navigation-title">
+  <h2 id="navigation-title">01 · Навигация картасы</h2>
+  <div class="map-node map-center"><strong>Басты бет · /</strong><small>Сессия бар → кабинет; жоқ → кіру</small></div>
+  <div class="map-arrow" aria-hidden="true">↓</div>
+  <div class="map-node map-center"><strong>Кіру · /login</strong><small>Дұрыс логин / құпиясөз → /dashboard</small></div>
+  <div class="map-arrow" aria-hidden="true">↓</div>
+  <div class="map-node map-center"><strong>Бағыттау · /dashboard</strong><small>FastAPI рөлді тексереді</small></div>
+  <div class="map-arrow" aria-hidden="true">↓</div>
+  <div class="map-columns">
+    <div class="map-node"><strong>Әкімші · /admin</strong><small>Пайдаланушылар, пәндер</small><span class="map-subnode">↔ /admin/users/{id}/edit<br>↔ /admin/subjects/{id}/edit</span></div>
+    <div class="map-node"><strong>Оқытушы · /teacher</strong><small>Өз пәндері мен бағалары</small><span class="map-subnode">↔ /teacher/grades/{id}/edit</span></div>
+    <div class="map-node"><strong>Студент · /student</strong><small>Тек өзінің бағалары</small><span class="map-subnode">↓ #grades (сол беттегі бөлім)</span></div>
+  </div>
+  <p class="map-arrow">↓ Әр рөлдің мәзірінен ↓</p>
+  <div class="map-columns map-lab-columns">
+    <a class="map-node map-node-blue" href="/lab10"><strong>Оқу жоспары · /lab10</strong><small>Каталог + форма + сақтау</small></a>
+    <span class="map-horizontal-arrow" aria-hidden="true">↔</span>
+    <a class="map-node map-node-green" href="/lab10/plan"><strong>Нәтиже · /lab10/plan</strong><small>localStorage оқу + DOM кестесі</small></a>
+    <span class="map-horizontal-arrow" aria-hidden="true">↔</span>
+    <a class="map-node" href="/lab10/map"><strong>Карта · /lab10/map</strong><small>Барлық беттен мәзір арқылы</small></a>
+  </div>
+  <p class="lab-muted">Барлық қорғалған бет → «Шығу» (POST /logout) → /login. Өңдеу беттеріндегі «Артқа» → тиісті рөлдің кабинеті. Рұқсатсыз рөл → 403; сессиясыз сұрау → /login.</p>
+</section>
+<section class="panel lab-map"><h2>02 · Деректер ағыны</h2><div class="map-columns map-flow"><div class="map-node"><strong>Серверлік бөлік · №9</strong><small>HTML форма → FastAPI: сессия, рөл, CSRF → SQLite (ак.db) → Jinja2 HTML</small></div><div class="map-node map-node-blue"><strong>Клиенттік бөлік · №10</strong><small>/lab10: submit → FormData → тексеру → JSON.stringify → localStorage.setItem</small></div><div class="map-node map-node-green"><strong>Басқа бетте көрсету</strong><small>/lab10/plan: getItem → JSON.parse → тексеру → createElement + textContent</small></div></div><p class="lab-note">localStorage авторизация үшін қолданылмайды. Сервер жеке деректерді қорғайды. Оқу модулі тек дайын тақырып кодын, сағатты және басымдықты сақтайды.</p></section>
+{% endblock %}

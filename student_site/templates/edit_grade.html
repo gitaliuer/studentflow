@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Бағаны өңдеу{% endblock %}
+{% block breadcrumb %}Бағаны өңдеу{% endblock %}
+{% block content %}
+<a href="/teacher#grade-list" class="back-link">{{ icon('back', 18) }} Журналға оралу</a>
+<div class="page-intro edit-intro"><div><div class="eyebrow eyebrow-dark"><span class="eyebrow-line"></span> БАҒАНЫ ӨҢДЕУ</div><h1>{{ editing.student }}</h1><p>{{ editing.group_name }} · {{ editing.subject }}</p></div></div>
+<section class="panel edit-panel"><form method="post" action="/teacher/grades/{{ editing.id }}/edit" class="form-stack">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <label class="field"><span>Баға (0–100)</span><input name="score" type="number" min="0" max="100" value="{{ editing.score }}" required></label>
+  <div class="form-actions"><a class="btn btn-secondary" href="/teacher#grade-list">Бас тарту</a><button class="btn btn-primary" type="submit">{{ icon('check', 18) }} Бағаны сақтау</button></div>
+</form></section>
+{% endblock %}
