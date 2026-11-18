@@ -1,0 +1,3 @@
+# Replace all paths with absolute paths for the service account running StudentFlow.
+# Daily backup at 02:00 UTC; backup_db.py verifies the copy and prunes old copies.
+0 2 * * * mkdir -p /absolute/path/student_site/backups && cd /absolute/path/student_site && /absolute/path/student_site/.venv/bin/python /absolute/path/student_site/backup_db.py --keep-days 30 >> /absolute/path/student_site/backups/backup.log 2>&1

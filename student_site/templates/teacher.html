@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Оқытушы кабинеті{% endblock %}
+{% block breadcrumb %}Оқытушы кабинеті{% endblock %}
+{% block content %}
+<div class="page-intro"><div><div class="eyebrow eyebrow-dark"><span class="eyebrow-line"></span> ОҚЫТУШЫ КАБИНЕТІ</div><h1>Сәлеметсіз бе, {{ user.full_name.split()[0] }}!</h1><p>Өзіңіздің пәндеріңіз бойынша бағаларды тіркеңіз және басқарыңыз.</p></div><span class="header-indicator">{{ icon('book', 17) }} Оқытушы</span></div>
+<section class="stats-grid stats-three">
+  <div class="stat-card"><div class="stat-icon icon-blue">{{ icon('book', 23) }}</div><div class="stat-label">Менің пәндерім</div><div class="stat-value">{{ subjects|length }}</div><div class="stat-foot">Бекітілген пәндер</div></div>
+  <div class="stat-card"><div class="stat-icon icon-mint">{{ icon('users', 23) }}</div><div class="stat-label">Студенттер</div><div class="stat-value">{{ students|length }}</div><div class="stat-foot">Жүйедегі студенттер</div></div>
+  <div class="stat-card"><div class="stat-icon icon-violet">{{ icon('chart', 23) }}</div><div class="stat-label">Қойылған бағалар</div><div class="stat-value">{{ grades|length }}</div><div class="stat-foot">Орташа балл: {{ average if average is not none else '—' }}</div></div>
+</section>
+<div class="section-head" id="grade-form"><div><h2>Жаңа баға қою</h2><p>Студент пен пәнді таңдап, нәтижені сақтаңыз</p></div></div>
+<section class="panel wide-form-panel"><form action="/teacher/grades" method="post" class="wide-grade-form">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <label class="field"><span>Студент</span><select name="student_id" required><option value="" disabled selected>Студентті таңдаңыз</option>{% for s in students %}<option value="{{ s.id }}">{{ s.full_name }} · {{ s.group_name }}</option>{% endfor %}</select></label>
+  <label class="field"><span>Пән</span><select name="subject_id" required><option value="" disabled selected>Пәнді таңдаңыз</option>{% for sub in subjects %}<option value="{{ sub.id }}">{{ sub.name }}</option>{% endfor %}</select></label>
+  <label class="field"><span>Баға (0–100)</span><input type="number" name="score" min="0" max="100" step="1" placeholder="Мысалы: 92" required></label>
+  <button class="btn btn-primary" type="submit" {% if not subjects or not students %}disabled{% endif %}>{{ icon('plus', 18) }} Бағаны сақтау</button>
+  </form>
+  {% if not subjects or not students %}<p class="form-hint">Баға қою үшін жүйеде студент және сізге бекітілген пән болуы қажет.</p>{% endif %}
+</section>
+<div class="section-head section-spacing" id="grade-list"><div><h2>Бағалар журналы</h2><p>Тек сіз оқытатын пәндердің нәтижелері</p></div><span class="count-pill">{{ grades|length }} нәтиже</span></div>
+<form action="/teacher#grade-list" method="get" class="filter-bar"><label class="field"><span class="sr-only">Журналдан іздеу</span><input name="q" value="{{ q }}" placeholder="Студент, топ немесе пән" maxlength="80"></label><label class="field"><span class="sr-only">Пән бойынша сүзу</span><select name="subject_id"><option value="0">Барлық пәндер</option>{% for sub in subjects %}<option value="{{ sub.id }}" {% if selected_subject == sub.id %}selected{% endif %}>{{ sub.name }}</option>{% endfor %}</select></label><button class="btn btn-primary" type="submit">Сүзу</button>{% if q or selected_subject %}<a class="btn btn-secondary" href="/teacher#grade-list">Тазарту</a>{% endif %}</form>
+<section class="panel panel-table"><div class="table-scroll"><table class="data-table">
+  <thead><tr><th>Студент</th><th>Пән</th><th>Баға</th><th>Күні</th><th class="align-right">Әрекет</th></tr></thead>
+  <tbody>{% for g in grades %}<tr>
+    <td><div class="person-cell"><div class="avatar avatar-student">{{ g.student[:1]|upper }}</div><div><strong>{{ g.student }}</strong><small>{{ g.group_name }}</small></div></div></td>
+    <td>{{ g.subject }}</td><td><span class="score-badge">{{ g.score }}</span></td><td class="date-cell">{{ g.created_at[:16] }}</td>
+    <td class="align-right"><div class="row-actions"><a class="icon-action" href="/teacher/grades/{{ g.id }}/edit" title="Бағаны өңдеу" aria-label="Бағаны өңдеу">{{ icon('edit', 17) }}</a><form method="post" action="/teacher/grades/{{ g.id }}/delete" data-confirm="Осы бағаны өшіру керек пе?"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button type="submit" class="icon-action icon-action-danger" title="Бағаны өшіру" aria-label="Бағаны өшіру">{{ icon('trash', 17) }}</button></form></div></td>
+  </tr>{% else %}<tr><td colspan="5"><div class="empty-state">{% if q or selected_subject %}Сүзгіге сәйкес баға табылмады. <a href="/teacher#grade-list">Сүзгіні тазарту</a>{% else %}Әзірге баға жоқ. Жаңа баға енгізу үшін жоғарыдағы форманы қолданыңыз.{% endif %}</div></td></tr>{% endfor %}</tbody>
+</table></div></section>
+{% endblock %}

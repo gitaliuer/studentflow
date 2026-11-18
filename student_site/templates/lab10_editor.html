@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Оқу жоспары{% endblock %}
+{% block breadcrumb %}Оқу жоспары · №10{% endblock %}
+{% block extra_head %}<script src="/static/lab10.js" defer></script>{% endblock %}
+{% block content %}
+<div data-lab-page="editor">
+  <div class="page-intro"><div><div class="eyebrow eyebrow-dark"><span class="eyebrow-line"></span> ЗЕРТХАНАЛЫҚ ЖҰМЫС №10</div><h1>Оқу жоспарын құрыңыз</h1><p>Массив → DOM → форма → localStorage → басқа бет.</p></div><a class="btn btn-secondary" href="/lab10/map">Беттер байланысы</a></div>
+  <nav class="lab-steps" aria-label="Зертханалық жұмыс қадамдары"><span class="lab-step current" aria-current="step">01 · Жоспар құру</span><a class="lab-step" href="/lab10/plan">02 · Сақталған жоспар →</a></nav>
+  <p class="lab-note">Бұл тек оқу мысалы. Жоспар осы браузерде ортақ сақталады, аккаунтқа байланыстырылмайды. Аты-жөн, логин, құпиясөз және бағалар localStorage-қа жазылмайды. SQLite-дегі деректер өзгермейді.</p>
+  <noscript><p class="alert alert-error">Бұл модуль үшін JavaScript қажет. Негізгі рөлдік беттер серверде жұмыс істейді.</p></noscript>
+  <div id="lab-status" class="lab-status" role="status" aria-live="polite"></div>
+  <div class="lab-editor-grid">
+    <section aria-labelledby="catalog-heading"><div class="section-head"><div><h2 id="catalog-heading">Тақырыптар каталогы</h2><p>Карточкалар JavaScript массивінен жасалады</p></div><span class="count-pill" id="catalog-count">JS күтілуде</span></div><div id="course-catalog" class="lab-catalog"></div></section>
+    <section class="panel lab-form-panel" aria-labelledby="plan-form-heading">
+      <h2 id="plan-form-heading">Жоспарға қосу</h2><p class="lab-muted">Бір тақырып қайта таңдалса, оның сағаты мен басымдығы жаңартылады.</p>
+      <form id="plan-form" class="form-stack">
+        <label class="field" for="course-id"><span>Тақырып</span><select id="course-id" name="courseId" required><option value="">Тақырыпты таңдаңыз</option></select></label>
+        <label class="field" for="plan-hours"><span>Оқу уақыты (сағат)</span><input id="plan-hours" name="hours" type="number" min="1" max="40" step="1" value="2" required aria-describedby="hours-hint"><small class="lab-muted" id="hours-hint">1–40 аралығындағы бүтін сан.</small></label>
+        <label class="field" for="plan-priority"><span>Басымдық</span><select id="plan-priority" name="priority" required><option value="normal">Қалыпты</option><option value="high">Жоғары</option><option value="low">Төмен</option></select></label>
+        <div class="lab-preview"><span>Формадан оқылған мәндер</span><output id="form-preview" for="course-id plan-hours plan-priority">Тақырыпты таңдаңыз.</output></div>
+        <button type="submit" id="save-plan" class="btn btn-primary" disabled>Жоспарға сақтау</button>
+        <a class="btn btn-secondary" href="/lab10/plan">Сақталған жоспарды ашу →</a>
+      </form>
+      <p class="lab-muted" id="editor-summary">Сақталған тақырыптар тексерілуде.</p>
+    </section>
+  </div>
+  <section class="panel lab-explainer"><h2>Бұл бетте не болады?</h2><ol><li>Каталогтағы массив JavaScript арқылы карточкаларға айналады.</li><li>Submit оқиғасы ұсталып, форма мәндері тексеріледі. Бет қайта жүктелмейді.</li><li>Тек тақырып коды, сағат саны және басымдық JSON түрінде сақталады.</li><li>«Сақталған жоспар» беті сол JSON-ды қайта оқып, DOM кестесін жасайды.</li></ol></section>
+</div>
+{% endblock %}

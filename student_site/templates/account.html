@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Аккаунт{% endblock %}
+{% block breadcrumb %}Аккаунт{% endblock %}
+{% block content %}
+<div class="page-intro"><div><div class="eyebrow eyebrow-dark"><span class="eyebrow-line"></span> ЖЕКЕ БАПТАУЛАР</div><h1>Аккаунт қауіпсіздігі</h1><p>Профиль мәліметтерін тексеріп, құпиясөзді жаңартыңыз.</p></div><span class="header-indicator">{{ icon('shield', 17) }} {{ roles[account.role] }}</span></div>
+<div class="dashboard-grid account-grid">
+  <section class="panel form-panel">
+    <div class="panel-heading"><span class="panel-heading-icon">{{ icon('users', 20) }}</span><div><h3>Профиль</h3><p>Жүйедегі есептік жазбаңыз</p></div></div>
+    <dl class="account-details"><div><dt>Аты-жөні</dt><dd>{{ account.full_name }}</dd></div><div><dt>Логин</dt><dd>@{{ account.username }}</dd></div><div><dt>Рөлі</dt><dd>{{ roles[account.role] }}</dd></div></dl>
+  </section>
+  <section class="panel form-panel">
+    <div class="panel-heading"><span class="panel-heading-icon">{{ icon('lock', 20) }}</span><div><h3>Құпиясөзді ауыстыру</h3><p>Жаңартқаннан кейін қайта кіру қажет</p></div></div>
+    <form method="post" action="/account/password" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label class="field"><span>Қазіргі құпиясөз</span><input name="current_password" type="password" autocomplete="current-password" required></label>
+      <label class="field"><span>Жаңа құпиясөз</span><input name="new_password" type="password" minlength="8" maxlength="200" autocomplete="new-password" required><small>8–200 таңба.</small></label>
+      <label class="field"><span>Жаңа құпиясөзді қайталаңыз</span><input name="password_confirm" type="password" minlength="8" maxlength="200" autocomplete="new-password" required></label>
+      <button type="submit" class="btn btn-primary">{{ icon('check', 18) }} Құпиясөзді жаңарту</button>
+    </form>
+  </section>
+</div>
+{% endblock %}

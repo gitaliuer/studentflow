@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Әкімші панелі{% endblock %}
+{% block breadcrumb %}Әкімші панелі{% endblock %}
+{% block content %}
+<div class="page-intro"><div><div class="eyebrow eyebrow-dark"><span class="eyebrow-line"></span> ӘКІМШІ КАБИНЕТІ</div><h1>Басқару панелі</h1><p>Пайдаланушыларды, пәндерді және оқу жүйесін басқарыңыз.</p></div><span class="header-indicator">{{ icon('shield', 17) }} Әкімші құқығы</span></div>
+<section class="stats-grid" aria-label="Статистика">
+  <div class="stat-card"><div class="stat-icon icon-blue">{{ icon('users', 23) }}</div><div class="stat-label">Пайдаланушылар</div><div class="stat-value">{{ stats.users }}</div><div class="stat-foot">Барлық аккаунттар</div></div>
+  <div class="stat-card"><div class="stat-icon icon-mint">{{ icon('cap', 24) }}</div><div class="stat-label">Студенттер</div><div class="stat-value">{{ stats.students }}</div><div class="stat-foot">Белсенді студенттер</div></div>
+  <div class="stat-card"><div class="stat-icon icon-violet">{{ icon('book', 23) }}</div><div class="stat-label">Оқытушылар</div><div class="stat-value">{{ stats.teachers }}</div><div class="stat-foot">Жүйедегі оқытушылар</div></div>
+  <div class="stat-card"><div class="stat-icon icon-peach">{{ icon('chart', 23) }}</div><div class="stat-label">Бағалар</div><div class="stat-value">{{ stats.grades }}</div><div class="stat-foot">Тіркелген нәтижелер</div></div>
+</section>
+<div class="section-head" id="users"><div><h2>Пайдаланушылар</h2><p>Аккаунттар мен олардың қолжетімділік рөлдері</p></div><span class="count-pill">{{ users|length }} нәтиже</span></div>
+<form action="/admin#users" method="get" class="filter-bar"><label class="field"><span class="sr-only">Пайдаланушыны іздеу</span><input name="q" value="{{ q }}" placeholder="Аты-жөні немесе логин бойынша іздеу" maxlength="80"></label><button class="btn btn-primary" type="submit">Іздеу</button>{% if q %}<a class="btn btn-secondary" href="/admin#users">Тазарту</a>{% endif %}</form>
+<div class="dashboard-grid">
+  <section class="panel panel-table">
+    <div class="table-scroll"><table class="data-table">
+      <thead><tr><th>Пайдаланушы</th><th>Рөлі</th><th>Тобы / Логин</th><th class="align-right">Әрекет</th></tr></thead>
+      <tbody>
+      {% for item in users %}<tr>
+        <td><div class="person-cell"><div class="avatar avatar-{{ item.role }}">{{ item.full_name[:1]|upper }}</div><div><strong>{{ item.full_name }}</strong><small>ID #{{ item.id }}</small></div></div></td>
+        <td><span class="role-pill role-{{ item.role }}"><span class="pill-dot"></span>{{ roles[item.role] }}</span></td>
+        <td><div class="stacked"><strong>{{ item.group_name or '—' }}</strong><small>@{{ item.username }}</small></div></td>
+        <td class="align-right"><div class="row-actions"><a href="/admin/users/{{ item.id }}/edit" class="icon-action" aria-label="{{ item.full_name }} өңдеу" title="Өңдеу">{{ icon('edit', 17) }}</a>
+          {% if item.id != user.id %}<form method="post" action="/admin/users/{{ item.id }}/delete" data-confirm="Бұл пайдаланушыны өшіру керек пе?"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="icon-action icon-action-danger" aria-label="{{ item.full_name }} өшіру" title="Өшіру">{{ icon('trash', 17) }}</button></form>{% endif %}
+        </div></td>
+      </tr>{% else %}<tr><td colspan="4"><div class="empty-state">{% if q %}Сұрауыңыз бойынша пайдаланушы табылмады. <a href="/admin#users">Іздеуді тазарту</a>{% else %}Пайдаланушылар әлі жоқ{% endif %}</div></td></tr>{% endfor %}
+      </tbody>
+    </table></div>
+  </section>
+  <section class="panel form-panel">
+    <div class="panel-heading"><span class="panel-heading-icon">{{ icon('plus', 20) }}</span><div><h3>Жаңа пайдаланушы</h3><p>Жүйеге аккаунт қосу</p></div></div>
+    <form method="post" action="/admin/users" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label class="field"><span>Аты-жөні</span><input name="full_name" placeholder="Мысалы: Айдана Серік" maxlength="100" required></label>
+      <label class="field"><span>Логин</span><input name="username" placeholder="aidana01" maxlength="40" pattern="[A-Za-z0-9_.-]{3,40}" required></label>
+      <label class="field"><span>Құпиясөз</span><input name="password" type="password" placeholder="Кемінде 8 таңба" minlength="8" autocomplete="new-password" required></label>
+      <label class="field"><span>Рөлі</span><select name="role" required><option value="student">Студент</option><option value="teacher">Оқытушы</option><option value="admin">Әкімші</option></select></label>
+      <label class="field"><span>Тобы <small>(студент үшін)</small></span><input name="group_name" placeholder="АЖҚ-221" maxlength="40"></label>
+      <button type="submit" class="btn btn-primary btn-full">{{ icon('plus', 18) }} Пайдаланушы қосу</button>
+    </form>
+  </section>
+</div>
+<div class="section-head section-spacing" id="subjects"><div><h2>Оқу пәндері</h2><p>Пәндерді оқытушыларға бекітіңіз</p></div><span class="count-pill">{{ subjects|length }} пән</span></div>
+<div class="dashboard-grid">
+  <section class="panel panel-table">
+    <div class="table-scroll"><table class="data-table">
+      <thead><tr><th>Пән</th><th>Оқытушы</th><th>Бағалар</th><th class="align-right">Әрекет</th></tr></thead>
+      <tbody>{% for item in subjects %}<tr>
+        <td><div class="subject-cell"><span class="subject-icon">{{ icon('book', 18) }}</span><strong>{{ item.name }}</strong></div></td>
+        <td>{{ item.teacher }}</td><td><span class="count-pill small">{{ item.grade_count }}</span></td>
+        <td class="align-right"><div class="row-actions"><a href="/admin/subjects/{{ item.id }}/edit" class="icon-action" title="Өңдеу" aria-label="Пәнді өңдеу">{{ icon('edit', 17) }}</a><form method="post" action="/admin/subjects/{{ item.id }}/delete" data-confirm="Бұл пәнді өшіру керек пе?"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button type="submit" class="icon-action icon-action-danger" title="Өшіру" aria-label="Пәнді өшіру">{{ icon('trash', 17) }}</button></form></div></td>
+      </tr>{% else %}<tr><td colspan="4"><div class="empty-state">Пәндер әлі енгізілмеген</div></td></tr>{% endfor %}</tbody>
+    </table></div>
+  </section>
+  <section class="panel form-panel">
+    <div class="panel-heading"><span class="panel-heading-icon">{{ icon('book', 20) }}</span><div><h3>Жаңа пән</h3><p>Пән мен оқытушыны белгілеңіз</p></div></div>
+    <form method="post" action="/admin/subjects" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label class="field"><span>Пән атауы</span><input name="name" placeholder="Мысалы: Python негіздері" maxlength="120" required></label>
+      <label class="field"><span>Оқытушы</span><select name="teacher_id" required><option value="" disabled selected>Оқытушыны таңдаңыз</option>{% for t in teachers %}<option value="{{ t.id }}">{{ t.full_name }}</option>{% endfor %}</select></label>
+      {% if teachers %}<button type="submit" class="btn btn-primary btn-full">{{ icon('plus', 18) }} Пән қосу</button>{% else %}<div class="form-hint">Алдымен оқытушы рөліндегі пайдаланушыны қосыңыз.</div>{% endif %}
+    </form>
+  </section>
+</div>
+{% endblock %}

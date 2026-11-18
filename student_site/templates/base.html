@@ -1,0 +1,80 @@
+{% from "_icons.html" import icon %}
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>{% block title %}StudentFlow{% endblock %} · StudentFlow</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="dashboard-body">
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a href="/dashboard" class="brand" aria-label="StudentFlow басты бет">
+        <span class="brand-logo">S<span class="brand-dot">.</span></span>
+        <span class="brand-text"><strong>StudentFlow</strong><small>ACADEMIC SYSTEM</small></span>
+      </a>
+      <div class="sidebar-caption">ЖҰМЫС КЕҢІСТІГІ</div>
+      <nav class="nav-list" aria-label="Негізгі мәзір">
+        {% if user and user.role == 'admin' %}
+          <a href="/admin" class="nav-link {% if request.url.path == '/admin' %}active{% endif %}">{{ icon('grid') }}<span>Басқару панелі</span></a>
+          <a href="/admin#users" class="nav-link">{{ icon('users') }}<span>Пайдаланушылар</span></a>
+          <a href="/admin#subjects" class="nav-link">{{ icon('book') }}<span>Пәндер</span></a>
+        {% elif user and user.role == 'teacher' %}
+          <a href="/teacher" class="nav-link {% if request.url.path == '/teacher' %}active{% endif %}">{{ icon('grid') }}<span>Басқару панелі</span></a>
+          <a href="/teacher#grade-form" class="nav-link">{{ icon('edit') }}<span>Баға қою</span></a>
+          <a href="/teacher#grade-list" class="nav-link">{{ icon('list') }}<span>Барлық бағалар</span></a>
+        {% elif user and user.role == 'student' %}
+          <a href="/student" class="nav-link {% if request.url.path == '/student' %}active{% endif %}">{{ icon('grid') }}<span>Жеке кабинет</span></a>
+          <a href="/student#grades" class="nav-link">{{ icon('chart') }}<span>Менің бағаларым</span></a>
+        {% endif %}
+        {% if user %}
+          <a href="/account" class="nav-link {% if request.url.path == '/account' %}active{% endif %}">{{ icon('users') }}<span>Аккаунт және пароль</span></a>
+          <a href="/lab12" class="nav-link {% if request.url.path == '/lab12' %}active{% endif %}">{{ icon('shield') }}<span>Қауіпсіздік · №12</span></a>
+          <a href="/lab10" class="nav-link {% if request.url.path == '/lab10' %}active{% endif %}">{{ icon('book') }}<span>Оқу жоспары · №10</span></a>
+          <a href="/lab10/plan" class="nav-link {% if request.url.path == '/lab10/plan' %}active{% endif %}">{{ icon('list') }}<span>Сақталған жоспар</span></a>
+          <a href="/lab10/map" class="nav-link {% if request.url.path == '/lab10/map' %}active{% endif %}">{{ icon('grid') }}<span>Сайт картасы</span></a>
+        {% endif %}
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-note">
+          <span class="note-icon">{{ icon('shield', 18) }}</span>
+          <div><strong>Қорғалған жүйе</strong><p>Деректер тек рұқсат етілген пайдаланушыларға көрсетіледі.</p></div>
+        </div>
+        {% if user %}
+        <form action="/logout" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <button type="submit" class="logout-button">{{ icon('logout', 18) }} <span>Шығу</span></button>
+        </form>
+        {% endif %}
+      </div>
+    </aside>
+
+    <div class="main-column">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button type="button" class="mobile-menu" aria-label="Мәзірді ашу" aria-expanded="false" aria-controls="sidebar">{{ icon('menu') }}</button>
+          <div class="breadcrumb"><span>StudentFlow</span><span class="breadcrumb-divider">/</span><strong>{% block breadcrumb %}Басқару панелі{% endblock %}</strong></div>
+        </div>
+        {% if user %}
+        <div class="user-chip"><div class="user-avatar">{{ user.full_name[:1] | upper }}</div><div class="user-chip-text"><strong>{{ user.full_name }}</strong><span>{{ roles[user.role] }}</span></div></div>
+        {% endif %}
+      </header>
+      <main class="content">
+        {% if flash %}
+          <div class="alert {% if flash.kind == 'error' %}alert-error{% else %}alert-success{% endif %}" role="status">
+            {% if flash.kind == 'error' %}{{ icon('alert', 19) }}{% else %}{{ icon('check', 19) }}{% endif %}
+            <span>{{ flash.text }}</span>
+          </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+        <footer class="page-footer">StudentFlow <span>•</span> Ақпараттық жүйелер · Зертханалық жұмыстар №9–12</footer>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
